@@ -23,7 +23,7 @@ func NewService(dbUser, dbPassword string) (*service, error) {
 }
 
 type User struct {
-	Name     string
+	Username     string
 	Password string
 }
 
@@ -46,7 +46,7 @@ func (s *service) AddUser(u User) (string, error) {
   if err != nil {
     return "", fmt.Errorf("failed to insert: %w", err)
   }
-	err = db.QueryRow(q, u.Name, hashedPassword).Scan(&id)
+	err = db.QueryRow(q, u.Username, hashedPassword).Scan(&id)
 	if err != nil {
 		return "", fmt.Errorf("failed to insert: %w", err)
 	}
