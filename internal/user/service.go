@@ -47,7 +47,7 @@ func (s *service) AddUser(u User) (string, error) {
     return "", fmt.Errorf("failed to insert: %w", UsernameAlreadyExists)
   }
 	var id string
-  q := "INSERT INTO users (username, password) VALUES (?, ?) RETURNING id"
+  q = "INSERT INTO users (username, password) VALUES (?, ?) RETURNING id"
 
   hashedPassword, err := u.GetPasswordHash()
   if err != nil {
