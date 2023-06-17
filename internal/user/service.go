@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	_ "github.com/lib/pq"
+  "golang.org/x/crypto/bcrypt"
 )
 
 type service struct {
