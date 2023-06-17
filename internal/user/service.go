@@ -49,7 +49,9 @@ func (s *service) AddUser(u User) (string, error) {
   }
 
 	var id string
+
   q = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id"
+
 
   hashedPassword, err := u.GetPasswordHash()
   if err != nil {
