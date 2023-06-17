@@ -32,7 +32,7 @@ func (s *service) AddUser(u User) (string, error) {
 	defer db.Close()
 
 	var id string
-  q := "INSERT INTO users (username, password) VALUES (?, ?) RETURNING id"
+  q := "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id"
 
 	err = db.QueryRow(q, u.Name, u.Password).Scan(&id)
 	if err != nil {
