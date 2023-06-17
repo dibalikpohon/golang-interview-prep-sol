@@ -42,14 +42,14 @@ func (s *service) AddUser(u User) (string, error) {
 	defer db.Close()
 
   var count int
-  q := "SELECT COUNT(id) FROM users WHERE username=?"
+  q := "SELECT COUNT(id) FROM users WHERE username=$1"
   db.QueryRow(q, u.Username).Scan(&count)
   if count > 0 {
     return "", fmt.Errorf("failed to insert: %w", UsernameAlreadyExists)
   }
 
 	var id string
-  q = "INSERT INTO users (username, password) VALUES (?, ?) RETURNING id"
+  q = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id"
 
   hashedPassword, err := u.GetPasswordHash()
   if err != nil {
