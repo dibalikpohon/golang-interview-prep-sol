@@ -9,6 +9,7 @@ import (
 )
 
 var UsernameAlreadyExists = errors.New("Username already exists")
+
 const HASH_COST = 18
 
 type service struct {
