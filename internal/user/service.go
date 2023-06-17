@@ -42,7 +42,11 @@ func (s *service) AddUser(u User) (string, error) {
 	var id string
   q := "INSERT INTO users (username, password) VALUES (?, ?) RETURNING id"
 
-	err = db.QueryRow(q, u.Name, u.Password).Scan(&id)
+  hashedPassword, err := u.GetPasswordHash()
+  if err != nil {
+    return "", fmt.Errorf("failed to insert: %w", err)
+  }
+	err = db.QueryRow(q, u.Name, hashedPassword).Scan(&id)
 	if err != nil {
 		return "", fmt.Errorf("failed to insert: %w", err)
 	}
