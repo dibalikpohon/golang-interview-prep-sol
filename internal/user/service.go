@@ -8,6 +8,8 @@ import (
   "golang.org/x/crypto/bcrypt"
 )
 
+const HASH_COST = 18
+
 type service struct {
 	dbUser     string
 	dbPassword string
@@ -23,6 +25,11 @@ func NewService(dbUser, dbPassword string) (*service, error) {
 type User struct {
 	Name     string
 	Password string
+}
+
+func (u *User) GetPasswordHash() (string, error) {
+  bytes, err := bcrypt.GenerateFromPassword([]byte(u.Password), HASH_COST);
+  return string(bytes), err
 }
 
 func (s *service) AddUser(u User) (string, error) {
