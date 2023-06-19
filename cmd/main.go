@@ -3,21 +3,24 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"os"
+
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 
-	"github.com/matthewjamesboyle/golang-interview-prep/internal/user"
 	"log"
 	"net/http"
+
+	"github.com/matthewjamesboyle/golang-interview-prep/internal/user"
 )
 
 func main() {
 
 	runMigrations()
 
-	svc, err := user.NewService("admin", "admin")
+	svc, err := user.NewService(os.Getenv("GOINTVPR_DB_USER"), os.Getenv("GOINTVPR_DB_PASSWORD"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,7 +36,8 @@ func main() {
 
 func runMigrations() {
 	// Database connection string
-	dbURL := "postgres://admin:admin@localhost/test_repo?sslmode=disable"
+	dbURL := fmt.Sprintf("postgres://%s:%s@localhost/test_repo?sslmode=disable",
+                       os.Getenv("GOINTVPR_DB_USER"), os.Getenv("GOINTVPR_DB_PASSWORD"))
 
 	db, err := sql.Open("postgres", dbURL)
 	if err != nil {
