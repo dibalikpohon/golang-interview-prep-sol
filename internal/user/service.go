@@ -13,9 +13,16 @@ var UsernameAlreadyExists = errors.New("Username already exists")
 const HASH_COST = 18
 
 type service struct {
+  DB *sql.DB
 }
 
 func NewService(dbUser, dbPassword string) (*service, error) {
+  dsn := fmt.Sprintf("postgres://%s:%s@localhost/test_repo?sslmode=disable", dbUser, dbPassword)
+  db, err := sql.Open("postgres", dsn)
+  if err != nil {
+    panic(err)
+  }
+  return &service{DB: db}, nil
 }
 
 type User struct {
