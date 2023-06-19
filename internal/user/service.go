@@ -13,15 +13,9 @@ var UsernameAlreadyExists = errors.New("Username already exists")
 const HASH_COST = 18
 
 type service struct {
-	dbUser     string
-	dbPassword string
 }
 
 func NewService(dbUser, dbPassword string) (*service, error) {
-	if dbUser == "" {
-		return nil, errors.New("dbUser was empty")
-	}
-	return &service{dbUser: dbUser, dbPassword: dbPassword}, nil
 }
 
 type User struct {
