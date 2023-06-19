@@ -36,15 +36,8 @@ func (u *User) GetPasswordHash() (string, error) {
 }
 
 func (s *service) AddUser(u User) (string, error) {
-	db, err := sql.Open("postgres", "postgres://admin:admin@localhost/test_repo?sslmode=disable")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
   var count int
   q := "SELECT COUNT(id) FROM users WHERE username=$1"
-  db.QueryRow(q, u.Username).Scan(&count)
   if count > 0 {
     return "", fmt.Errorf("failed to insert: %w", UsernameAlreadyExists)
   }
@@ -58,7 +51,6 @@ func (s *service) AddUser(u User) (string, error) {
   if err != nil {
     return "", fmt.Errorf("failed to insert: %w", err)
   }
-	err = db.QueryRow(q, u.Username, hashedPassword).Scan(&id)
 	if err != nil {
 		return "", fmt.Errorf("failed to insert: %w", err)
 	}
