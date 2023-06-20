@@ -5,12 +5,10 @@ import (
 	"errors"
 	"fmt"
 	_ "github.com/lib/pq"
-  "golang.org/x/crypto/bcrypt"
 )
 
 var UsernameAlreadyExists = errors.New("Username already exists")
 
-const HASH_COST = 18
 
 type service struct {
   DB *sql.DB
@@ -25,15 +23,6 @@ func NewService(dbUser, dbPassword string) (*service, error) {
   return &service{DB: db}, nil
 }
 
-type User struct {
-	Username     string
-	Password string
-}
-
-func (u *User) GetPasswordHash() (string, error) {
-  bytes, err := bcrypt.GenerateFromPassword([]byte(u.Password), HASH_COST);
-  return string(bytes), err
-}
 
 func (s *service) AddUser(u User) (string, error) {
   var count int
