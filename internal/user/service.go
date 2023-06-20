@@ -13,15 +13,16 @@ var UsernameAlreadyExists = errors.New("Username already exists")
 const HASH_COST = 18
 
 type service struct {
-	dbUser     string
-	dbPassword string
+  DB *sql.DB
 }
 
 func NewService(dbUser, dbPassword string) (*service, error) {
-	if dbUser == "" {
-		return nil, errors.New("dbUser was empty")
-	}
-	return &service{dbUser: dbUser, dbPassword: dbPassword}, nil
+  dsn := fmt.Sprintf("postgres://%s:%s@localhost/test_repo?sslmode=disable", dbUser, dbPassword)
+  db, err := sql.Open("postgres", dsn)
+  if err != nil {
+    panic(err)
+  }
+  return &service{DB: db}, nil
 }
 
 type User struct {
@@ -35,15 +36,9 @@ func (u *User) GetPasswordHash() (string, error) {
 }
 
 func (s *service) AddUser(u User) (string, error) {
-	db, err := sql.Open("postgres", "postgres://admin:admin@localhost/test_repo?sslmode=disable")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
   var count int
   q := "SELECT COUNT(id) FROM users WHERE username=$1"
-  db.QueryRow(q, u.Username).Scan(&count)
+  s.DB.QueryRow(q, u.Username).Scan(&count)
   if count > 0 {
     return "", fmt.Errorf("failed to insert: %w", UsernameAlreadyExists)
   }
@@ -57,7 +52,7 @@ func (s *service) AddUser(u User) (string, error) {
   if err != nil {
     return "", fmt.Errorf("failed to insert: %w", err)
   }
-	err = db.QueryRow(q, u.Username, hashedPassword).Scan(&id)
+	err = s.DB.QueryRow(q, u.Username, hashedPassword).Scan(&id)
 	if err != nil {
 		return "", fmt.Errorf("failed to insert: %w", err)
 	}

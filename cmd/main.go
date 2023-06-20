@@ -21,6 +21,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+  defer svc.DB.Close()
 
 	h := user.Handler{Svc: *svc}
 
