@@ -27,6 +27,7 @@ func (h Handler) AddUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Failed to add user"))
+    return
 	}
 
 	// Return a success response
